@@ -1,10 +1,12 @@
-#📊 Data Warehousing and Business Intelligence Retail Project
+# 📊 Data Warehousing and Business Intelligence Retail Project
 
-This project was completed for the Data Warehousing and Business Intelligence module.
+This project was completed for the **Data Warehousing and Business Intelligence module**.
 
-##🚀Project Overview
+---
 
-This project demonstrates the design and development of a complete Data Warehouse and Business Intelligence solution using a fictional retail dataset.
+## 🚀 Project Overview
+
+This project demonstrates the design and development of a complete **Data Warehouse and Business Intelligence solution** using a fictional retail dataset.
 
 ## Tools and Technologies
 
