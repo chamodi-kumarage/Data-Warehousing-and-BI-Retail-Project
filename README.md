@@ -76,8 +76,9 @@ Main ETL steps:
 ## Project Structure
 
 ```text
-Report/
-Screenshots/
-SSIS_Project/
-SQL_Scripts/
-Dataset/
+01_original_csv/
+02_excel_sources/
+04_ssis_project/
+05_screenshots/
+06_report/
+diagram/
