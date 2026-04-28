@@ -1,8 +1,8 @@
-# Data Warehousing and Business Intelligence Retail Project
+#📊 Data Warehousing and Business Intelligence Retail Project
 
 This project was completed for the Data Warehousing and Business Intelligence module.
 
-## Project Overview
+##🚀Project Overview
 
 This project demonstrates the design and development of a complete Data Warehouse and Business Intelligence solution using a fictional retail dataset.
 
@@ -63,7 +63,7 @@ Main ETL steps:
 4. Load the FactSales table
 5. Apply accumulating fact table updates
 
-## Key Features
+## ⭐ Key Features
 
 - Staging database
 - Data warehouse database
