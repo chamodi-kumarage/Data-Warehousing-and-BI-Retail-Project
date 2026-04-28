@@ -1,0 +1,24 @@
+# Visual Studio / SSIS
+.vs/
+bin/
+obj/
+*.user
+*.suo
+*.dtproj.user
+
+# SQL Server / database backup files
+*.bak
+*.mdf
+*.ldf
+
+# Temporary files
+*.tmp
+*.log
+
+# Windows
+Thumbs.db
+Desktop.ini
+
+# Sensitive files
+*.env
+config.json

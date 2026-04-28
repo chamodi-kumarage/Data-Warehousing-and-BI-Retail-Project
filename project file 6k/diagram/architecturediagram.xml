@@ -1,0 +1,47 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<mxGraphModel dx="1422" dy="762" grid="1" gridSize="10" guides="1" tooltips="1" connect="1" arrows="1" fold="1" page="1" pageScale="1" pageWidth="1169" pageHeight="827" math="0" shadow="0">
+  <root>
+    <mxCell id="0"/>
+    <mxCell id="1" parent="0"/>
+    <!-- Layer Labels -->
+    <mxCell id="L1" value="DATA SOURCES" style="text;html=1;fontStyle=1;fontSize=13;fillColor=#1F4E79;fontColor=#FFFFFF;align=center;rounded=1;" vertex="1" parent="1"><mxGeometry x="30" y="20" width="160" height="35" as="geometry"/></mxCell>
+    <mxCell id="L2" value="ETL (SSIS)" style="text;html=1;fontStyle=1;fontSize=13;fillColor=#1F4E79;fontColor=#FFFFFF;align=center;rounded=1;" vertex="1" parent="1"><mxGeometry x="260" y="20" width="160" height="35" as="geometry"/></mxCell>
+    <mxCell id="L3" value="STAGING DB" style="text;html=1;fontStyle=1;fontSize=13;fillColor=#1F4E79;fontColor=#FFFFFF;align=center;rounded=1;" vertex="1" parent="1"><mxGeometry x="500" y="20" width="160" height="35" as="geometry"/></mxCell>
+    <mxCell id="L4" value="DATA WAREHOUSE" style="text;html=1;fontStyle=1;fontSize=13;fillColor=#1F4E79;fontColor=#FFFFFF;align=center;rounded=1;" vertex="1" parent="1"><mxGeometry x="740" y="20" width="160" height="35" as="geometry"/></mxCell>
+    <mxCell id="L5" value="BI REPORTING" style="text;html=1;fontStyle=1;fontSize=13;fillColor=#1F4E79;fontColor=#FFFFFF;align=center;rounded=1;" vertex="1" parent="1"><mxGeometry x="980" y="20" width="160" height="35" as="geometry"/></mxCell>
+    <!-- Data Sources -->
+    <mxCell id="S1" value="customers.csv&#xa;(Flat File)" style="shape=mxgraph.flowchart.document;whiteSpace=wrap;html=1;fillColor=#d5e8d4;strokeColor=#82b366;fontSize=11;" vertex="1" parent="1"><mxGeometry x="40" y="80" width="120" height="60" as="geometry"/></mxCell>
+    <mxCell id="S2" value="transactions&#xa;(SQL Server OLE DB)" style="shape=mxgraph.flowchart.database;whiteSpace=wrap;html=1;fillColor=#dae8fc;strokeColor=#6c8ebf;fontSize=11;" vertex="1" parent="1"><mxGeometry x="40" y="170" width="120" height="60" as="geometry"/></mxCell>
+    <mxCell id="S3" value="campaigns.xlsx&#xa;interactions.xlsx&#xa;(Excel)" style="shape=mxgraph.flowchart.document;whiteSpace=wrap;html=1;fillColor=#fff2cc;strokeColor=#d6b656;fontSize=11;" vertex="1" parent="1"><mxGeometry x="40" y="260" width="120" height="60" as="geometry"/></mxCell>
+    <mxCell id="S4" value="support_tickets.csv&#xa;reviews.csv&#xa;(Flat File)" style="shape=mxgraph.flowchart.document;whiteSpace=wrap;html=1;fillColor=#f8cecc;strokeColor=#b85450;fontSize=11;" vertex="1" parent="1"><mxGeometry x="40" y="350" width="120" height="60" as="geometry"/></mxCell>
+    <!-- SSIS Packages -->
+    <mxCell id="E1" value="Extract&#xa;(Flat File / Excel / OLE DB Source)" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#ffe6cc;strokeColor=#d79b00;fontSize=11;" vertex="1" parent="1"><mxGeometry x="270" y="90" width="140" height="55" as="geometry"/></mxCell>
+    <mxCell id="E2" value="Transform&#xa;(Data Conversion,&#xa;Derived Column, Lookup)" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#ffe6cc;strokeColor=#d79b00;fontSize=11;" vertex="1" parent="1"><mxGeometry x="270" y="175" width="140" height="65" as="geometry"/></mxCell>
+    <mxCell id="E3" value="Load&#xa;(OLE DB Destination)" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#ffe6cc;strokeColor=#d79b00;fontSize=11;" vertex="1" parent="1"><mxGeometry x="270" y="270" width="140" height="55" as="geometry"/></mxCell>
+    <mxCell id="E4" value="SCD Type 2&#xa;(DimCustomer)" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#ffe6cc;strokeColor=#d79b00;fontSize=11;" vertex="1" parent="1"><mxGeometry x="270" y="355" width="140" height="55" as="geometry"/></mxCell>
+    <!-- Staging DB -->
+    <mxCell id="ST1" value="RetailStageDB&#xa;&#xa;stg_Customers&#xa;stg_Transactions&#xa;stg_Interactions&#xa;stg_Campaigns&#xa;stg_CustomerReviews&#xa;stg_SupportTickets&#xa;stg_FactSalesCompletion" style="shape=mxgraph.flowchart.database;whiteSpace=wrap;html=1;fillColor=#f8cecc;strokeColor=#b85450;fontSize=11;" vertex="1" parent="1"><mxGeometry x="510" y="90" width="140" height="220" as="geometry"/></mxCell>
+    <!-- DW -->
+    <mxCell id="DW1" value="RetailDW&#xa;&#xa;DimDate&#xa;DimCustomer (SCD2)&#xa;DimProduct&#xa;DimStore&#xa;DimPaymentMethod&#xa;&#xa;FactSales&#xa;(Accumulating)" style="shape=mxgraph.flowchart.database;whiteSpace=wrap;html=1;fillColor=#d5e8d4;strokeColor=#82b366;fontSize=11;" vertex="1" parent="1"><mxGeometry x="750" y="90" width="140" height="240" as="geometry"/></mxCell>
+    <!-- BI Layer -->
+    <mxCell id="BI1" value="SSAS&#xa;(OLAP Cubes)" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#e1d5e7;strokeColor=#9673a6;fontSize=11;" vertex="1" parent="1"><mxGeometry x="990" y="100" width="130" height="60" as="geometry"/></mxCell>
+    <mxCell id="BI2" value="SSRS&#xa;(Reports)" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#e1d5e7;strokeColor=#9673a6;fontSize=11;" vertex="1" parent="1"><mxGeometry x="990" y="190" width="130" height="60" as="geometry"/></mxCell>
+    <mxCell id="BI3" value="Dashboards&#xa;&amp; Analytics" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#e1d5e7;strokeColor=#9673a6;fontSize=11;" vertex="1" parent="1"><mxGeometry x="990" y="280" width="130" height="60" as="geometry"/></mxCell>
+    <!-- Error Tables -->
+    <mxCell id="ERR" value="Error Tables&#xa;Err_NotFound&#xa;Err_BadTime" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#f8cecc;strokeColor=#b85450;fontSize=10;" vertex="1" parent="1"><mxGeometry x="750" y="360" width="140" height="60" as="geometry"/></mxCell>
+    <!-- Arrows -->
+    <mxCell id="a1" style="edgeStyle=orthogonalEdgeStyle;endArrow=block;endFill=1;" edge="1" source="S1" target="E1" parent="1"><mxGeometry relative="1" as="geometry"/></mxCell>
+    <mxCell id="a2" style="edgeStyle=orthogonalEdgeStyle;endArrow=block;endFill=1;" edge="1" source="S2" target="E1" parent="1"><mxGeometry relative="1" as="geometry"/></mxCell>
+    <mxCell id="a3" style="edgeStyle=orthogonalEdgeStyle;endArrow=block;endFill=1;" edge="1" source="S3" target="E1" parent="1"><mxGeometry relative="1" as="geometry"/></mxCell>
+    <mxCell id="a4" style="edgeStyle=orthogonalEdgeStyle;endArrow=block;endFill=1;" edge="1" source="S4" target="E1" parent="1"><mxGeometry relative="1" as="geometry"/></mxCell>
+    <mxCell id="a5" style="edgeStyle=orthogonalEdgeStyle;endArrow=block;endFill=1;" edge="1" source="E1" target="E2" parent="1"><mxGeometry relative="1" as="geometry"/></mxCell>
+    <mxCell id="a6" style="edgeStyle=orthogonalEdgeStyle;endArrow=block;endFill=1;" edge="1" source="E2" target="E3" parent="1"><mxGeometry relative="1" as="geometry"/></mxCell>
+    <mxCell id="a7" style="edgeStyle=orthogonalEdgeStyle;endArrow=block;endFill=1;" edge="1" source="E3" target="ST1" parent="1"><mxGeometry relative="1" as="geometry"/></mxCell>
+    <mxCell id="a8" style="edgeStyle=orthogonalEdgeStyle;endArrow=block;endFill=1;" edge="1" source="E4" target="ST1" parent="1"><mxGeometry relative="1" as="geometry"/></mxCell>
+    <mxCell id="a9" style="edgeStyle=orthogonalEdgeStyle;endArrow=block;endFill=1;" edge="1" source="ST1" target="DW1" parent="1"><mxGeometry relative="1" as="geometry"/></mxCell>
+    <mxCell id="a10" style="edgeStyle=orthogonalEdgeStyle;endArrow=block;endFill=1;" edge="1" source="DW1" target="BI1" parent="1"><mxGeometry relative="1" as="geometry"/></mxCell>
+    <mxCell id="a11" style="edgeStyle=orthogonalEdgeStyle;endArrow=block;endFill=1;" edge="1" source="DW1" target="BI2" parent="1"><mxGeometry relative="1" as="geometry"/></mxCell>
+    <mxCell id="a12" style="edgeStyle=orthogonalEdgeStyle;endArrow=block;endFill=1;" edge="1" source="DW1" target="BI3" parent="1"><mxGeometry relative="1" as="geometry"/></mxCell>
+    <mxCell id="a13" style="edgeStyle=orthogonalEdgeStyle;endArrow=block;endFill=1;dashed=1;strokeColor=#b85450;" edge="1" source="E3" target="ERR" parent="1"><mxGeometry relative="1" as="geometry"/></mxCell>
+  </root>
+</mxGraphModel>

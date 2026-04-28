@@ -1,0 +1,136 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<mxfile host="app.diagrams.net" agent="Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/146.0.0.0 Safari/537.36" version="29.6.6">
+  <diagram name="Page-1" id="I1hy-pR8w0N2FoKFCCVb">
+    <mxGraphModel dx="1097" dy="592" grid="1" gridSize="10" guides="1" tooltips="1" connect="1" arrows="1" fold="1" page="1" pageScale="1" pageWidth="850" pageHeight="1100" math="0" shadow="0">
+      <root>
+        <mxCell id="0" />
+        <mxCell id="1" parent="0" />
+        <mxCell id="SFivPKSbp-TtxXLCPGon-33" parent="1" style="text;html=1;fontStyle=1;fontSize=13;fillColor=#1F4E79;fontColor=#FFFFFF;align=center;rounded=1;" value="DATA SOURCES" vertex="1">
+          <mxGeometry height="35" width="160" x="30" y="20" as="geometry" />
+        </mxCell>
+        <mxCell id="SFivPKSbp-TtxXLCPGon-34" parent="1" style="text;html=1;fontStyle=1;fontSize=13;fillColor=#1F4E79;fontColor=#FFFFFF;align=center;rounded=1;" value="ETL (SSIS)" vertex="1">
+          <mxGeometry height="35" width="160" x="210" y="20" as="geometry" />
+        </mxCell>
+        <mxCell id="SFivPKSbp-TtxXLCPGon-35" parent="1" style="text;html=1;fontStyle=1;fontSize=13;fillColor=#1F4E79;fontColor=#FFFFFF;align=center;rounded=1;" value="STAGING DB" vertex="1">
+          <mxGeometry height="35" width="160" x="390" y="20" as="geometry" />
+        </mxCell>
+        <mxCell id="SFivPKSbp-TtxXLCPGon-36" parent="1" style="text;html=1;fontStyle=1;fontSize=13;fillColor=#1F4E79;fontColor=#FFFFFF;align=center;rounded=1;" value="DATA WAREHOUSE" vertex="1">
+          <mxGeometry height="35" width="160" x="560" y="20" as="geometry" />
+        </mxCell>
+        <mxCell id="SFivPKSbp-TtxXLCPGon-37" parent="1" style="text;html=1;fontStyle=1;fontSize=13;fillColor=#1F4E79;fontColor=#FFFFFF;align=center;rounded=1;" value="BI REPORTING" vertex="1">
+          <mxGeometry height="35" width="160" x="730" y="20" as="geometry" />
+        </mxCell>
+        <mxCell id="SFivPKSbp-TtxXLCPGon-38" parent="1" style="shape=mxgraph.flowchart.document;whiteSpace=wrap;html=1;fillColor=#d5e8d4;strokeColor=#82b366;fontSize=11;" value="customers.csv&#xa;(Flat File)" vertex="1">
+          <mxGeometry height="60" width="120" x="40" y="80" as="geometry" />
+        </mxCell>
+        <mxCell id="SFivPKSbp-TtxXLCPGon-39" parent="1" style="shape=mxgraph.flowchart.database;whiteSpace=wrap;html=1;fillColor=#dae8fc;strokeColor=#6c8ebf;fontSize=11;" value="transactions&#xa;(SQL Server OLE DB)" vertex="1">
+          <mxGeometry height="60" width="120" x="40" y="170" as="geometry" />
+        </mxCell>
+        <mxCell id="SFivPKSbp-TtxXLCPGon-40" parent="1" style="shape=mxgraph.flowchart.document;whiteSpace=wrap;html=1;fillColor=#fff2cc;strokeColor=#d6b656;fontSize=11;" value="campaigns.xlsx&#xa;interactions.xlsx&#xa;(Excel)" vertex="1">
+          <mxGeometry height="60" width="120" x="40" y="260" as="geometry" />
+        </mxCell>
+        <mxCell id="SFivPKSbp-TtxXLCPGon-41" parent="1" style="shape=mxgraph.flowchart.document;whiteSpace=wrap;html=1;fillColor=#f8cecc;strokeColor=#b85450;fontSize=11;" value="support_tickets.csv&#xa;reviews.csv&#xa;(Flat File)" vertex="1">
+          <mxGeometry height="60" width="120" x="40" y="350" as="geometry" />
+        </mxCell>
+        <mxCell id="SFivPKSbp-TtxXLCPGon-42" parent="1" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#ffe6cc;strokeColor=#d79b00;fontSize=11;" value="Extract&#xa;(Flat File / Excel / OLE DB Source)" vertex="1">
+          <mxGeometry height="55" width="140" x="220" y="90" as="geometry" />
+        </mxCell>
+        <mxCell id="SFivPKSbp-TtxXLCPGon-43" parent="1" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#ffe6cc;strokeColor=#d79b00;fontSize=11;" value="Transform&#xa;(Data Conversion,&#xa;Derived Column, Lookup)" vertex="1">
+          <mxGeometry height="65" width="140" x="220" y="175" as="geometry" />
+        </mxCell>
+        <mxCell id="SFivPKSbp-TtxXLCPGon-44" parent="1" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#ffe6cc;strokeColor=#d79b00;fontSize=11;" value="Load&#xa;(OLE DB Destination)" vertex="1">
+          <mxGeometry height="55" width="140" x="220" y="270" as="geometry" />
+        </mxCell>
+        <mxCell id="SFivPKSbp-TtxXLCPGon-45" parent="1" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#ffe6cc;strokeColor=#d79b00;fontSize=11;" value="SCD Type 2&#xa;(DimCustomer)" vertex="1">
+          <mxGeometry height="55" width="140" x="220" y="355" as="geometry" />
+        </mxCell>
+        <mxCell id="SFivPKSbp-TtxXLCPGon-46" parent="1" style="shape=mxgraph.flowchart.database;whiteSpace=wrap;html=1;fillColor=#f8cecc;strokeColor=#b85450;fontSize=11;" value="RetailStageDB&lt;div&gt;&lt;br&gt;&lt;/div&gt;&lt;div&gt;&lt;br&gt;&lt;br&gt;stg_Customers&lt;br&gt;stg_Transactions&lt;br&gt;stg_Interactions&lt;br&gt;stg_Campaigns&lt;br&gt;stg_CustomerReviews&lt;br&gt;stg_SupportTickets&lt;br&gt;stg_FactSalesCompletion&lt;/div&gt;" vertex="1">
+          <mxGeometry height="220" width="140" x="400" y="90" as="geometry" />
+        </mxCell>
+        <mxCell id="SFivPKSbp-TtxXLCPGon-47" parent="1" style="shape=mxgraph.flowchart.database;whiteSpace=wrap;html=1;fillColor=#d5e8d4;strokeColor=#82b366;fontSize=11;" value="RetailDW&lt;div&gt;&lt;br&gt;&lt;br&gt;DimDate&lt;br&gt;DimCustomer (SCD2)&lt;br&gt;DimProduct&lt;br&gt;DimStore&lt;br&gt;DimPaymentMethod&lt;br&gt;&lt;br&gt;FactSales&lt;br&gt;(Accumulating)&lt;/div&gt;" vertex="1">
+          <mxGeometry height="240" width="140" x="570" y="90" as="geometry" />
+        </mxCell>
+        <mxCell id="SFivPKSbp-TtxXLCPGon-48" parent="1" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#e1d5e7;strokeColor=#9673a6;fontSize=11;" value="SSAS&#xa;(OLAP Cubes)" vertex="1">
+          <mxGeometry height="60" width="130" x="740" y="100" as="geometry" />
+        </mxCell>
+        <mxCell id="SFivPKSbp-TtxXLCPGon-49" parent="1" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#e1d5e7;strokeColor=#9673a6;fontSize=11;" value="SSRS&#xa;(Reports)" vertex="1">
+          <mxGeometry height="60" width="130" x="740" y="190" as="geometry" />
+        </mxCell>
+        <mxCell id="SFivPKSbp-TtxXLCPGon-50" parent="1" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#e1d5e7;strokeColor=#9673a6;fontSize=11;" value="Dashboards&#xa;&amp; Analytics" vertex="1">
+          <mxGeometry height="60" width="130" x="740" y="280" as="geometry" />
+        </mxCell>
+        <mxCell id="SFivPKSbp-TtxXLCPGon-51" parent="1" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#f8cecc;strokeColor=#b85450;fontSize=10;" value="Error Tables&#xa;Err_NotFound&#xa;Err_BadTime" vertex="1">
+          <mxGeometry height="60" width="140" x="480" y="350" as="geometry" />
+        </mxCell>
+        <mxCell id="SFivPKSbp-TtxXLCPGon-52" edge="1" parent="1" source="SFivPKSbp-TtxXLCPGon-38" style="edgeStyle=orthogonalEdgeStyle;endArrow=block;endFill=1;" target="SFivPKSbp-TtxXLCPGon-42">
+          <mxGeometry relative="1" as="geometry">
+            <Array as="points">
+              <mxPoint x="250" y="100" />
+              <mxPoint x="250" y="100" />
+            </Array>
+          </mxGeometry>
+        </mxCell>
+        <mxCell id="SFivPKSbp-TtxXLCPGon-53" edge="1" parent="1" source="SFivPKSbp-TtxXLCPGon-39" style="edgeStyle=orthogonalEdgeStyle;endArrow=block;endFill=1;entryX=0.347;entryY=0.993;entryDx=0;entryDy=0;entryPerimeter=0;" target="SFivPKSbp-TtxXLCPGon-42">
+          <mxGeometry relative="1" as="geometry">
+            <Array as="points">
+              <mxPoint x="100" y="160" />
+              <mxPoint x="269" y="160" />
+            </Array>
+          </mxGeometry>
+        </mxCell>
+        <mxCell id="SFivPKSbp-TtxXLCPGon-54" edge="1" parent="1" source="SFivPKSbp-TtxXLCPGon-40" style="edgeStyle=orthogonalEdgeStyle;endArrow=block;endFill=1;" target="SFivPKSbp-TtxXLCPGon-42">
+          <mxGeometry relative="1" as="geometry">
+            <Array as="points">
+              <mxPoint x="180" y="260" />
+              <mxPoint x="180" y="117" />
+            </Array>
+          </mxGeometry>
+        </mxCell>
+        <mxCell id="SFivPKSbp-TtxXLCPGon-55" edge="1" parent="1" source="SFivPKSbp-TtxXLCPGon-41" style="edgeStyle=orthogonalEdgeStyle;endArrow=block;endFill=1;entryX=0;entryY=0.75;entryDx=0;entryDy=0;" target="SFivPKSbp-TtxXLCPGon-42">
+          <mxGeometry relative="1" as="geometry">
+            <Array as="points">
+              <mxPoint x="200" y="380" />
+              <mxPoint x="200" y="131" />
+            </Array>
+          </mxGeometry>
+        </mxCell>
+        <mxCell id="SFivPKSbp-TtxXLCPGon-56" edge="1" parent="1" source="SFivPKSbp-TtxXLCPGon-42" style="edgeStyle=orthogonalEdgeStyle;endArrow=block;endFill=1;" target="SFivPKSbp-TtxXLCPGon-43">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+        <mxCell id="SFivPKSbp-TtxXLCPGon-57" edge="1" parent="1" source="SFivPKSbp-TtxXLCPGon-43" style="edgeStyle=orthogonalEdgeStyle;endArrow=block;endFill=1;" target="SFivPKSbp-TtxXLCPGon-44">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+        <mxCell id="SFivPKSbp-TtxXLCPGon-58" edge="1" parent="1" source="SFivPKSbp-TtxXLCPGon-44" style="edgeStyle=orthogonalEdgeStyle;endArrow=block;endFill=1;" target="SFivPKSbp-TtxXLCPGon-46">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+        <mxCell id="SFivPKSbp-TtxXLCPGon-59" edge="1" parent="1" source="SFivPKSbp-TtxXLCPGon-45" style="edgeStyle=orthogonalEdgeStyle;endArrow=block;endFill=1;" target="SFivPKSbp-TtxXLCPGon-46">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+        <mxCell id="SFivPKSbp-TtxXLCPGon-60" edge="1" parent="1" source="SFivPKSbp-TtxXLCPGon-46" style="edgeStyle=orthogonalEdgeStyle;endArrow=block;endFill=1;" target="SFivPKSbp-TtxXLCPGon-47">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+        <mxCell id="SFivPKSbp-TtxXLCPGon-61" edge="1" parent="1" source="SFivPKSbp-TtxXLCPGon-47" style="edgeStyle=orthogonalEdgeStyle;endArrow=block;endFill=1;" target="SFivPKSbp-TtxXLCPGon-48">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+        <mxCell id="SFivPKSbp-TtxXLCPGon-62" edge="1" parent="1" source="SFivPKSbp-TtxXLCPGon-47" style="edgeStyle=orthogonalEdgeStyle;endArrow=block;endFill=1;" target="SFivPKSbp-TtxXLCPGon-49">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+        <mxCell id="SFivPKSbp-TtxXLCPGon-63" edge="1" parent="1" source="SFivPKSbp-TtxXLCPGon-47" style="edgeStyle=orthogonalEdgeStyle;endArrow=block;endFill=1;" target="SFivPKSbp-TtxXLCPGon-50">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+        <mxCell id="SFivPKSbp-TtxXLCPGon-64" edge="1" parent="1" source="SFivPKSbp-TtxXLCPGon-46" style="edgeStyle=orthogonalEdgeStyle;endArrow=block;endFill=1;dashed=1;strokeColor=#b85450;exitX=0.122;exitY=0.949;exitDx=0;exitDy=0;exitPerimeter=0;entryX=0.5;entryY=0;entryDx=0;entryDy=0;" target="SFivPKSbp-TtxXLCPGon-51">
+          <mxGeometry relative="1" as="geometry">
+            <Array as="points">
+              <mxPoint x="410" y="299" />
+              <mxPoint x="410" y="340" />
+              <mxPoint x="580" y="340" />
+              <mxPoint x="580" y="350" />
+            </Array>
+            <mxPoint x="410" y="310.00368421052633" as="sourcePoint" />
+            <mxPoint x="820" y="373" as="targetPoint" />
+          </mxGeometry>
+        </mxCell>
+      </root>
+    </mxGraphModel>
+  </diagram>
+</mxfile>
