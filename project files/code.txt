@@ -1,0 +1,489 @@
+
+CREATE DATABASE RetailSourceDB;
+GO
+CREATE DATABASE RetailStageDB;
+GO
+CREATE DATABASE RetailDW;
+GO
+
+----------------------------------------------------------------------------------------
+-- Create RetailStageDB
+IF NOT EXISTS (SELECT name FROM sys.databases WHERE name = 'RetailStageDB')
+BEGIN
+    CREATE DATABASE RetailStageDB;
+END
+GO
+
+-- Create RetailDW
+IF NOT EXISTS (SELECT name FROM sys.databases WHERE name = 'RetailDW')
+BEGIN
+    CREATE DATABASE RetailDW;
+END
+GO
+
+
+IF NOT EXISTS (SELECT name FROM sys.databases WHERE name = 'RetailSourceDB')
+BEGIN
+    CREATE DATABASE RetailSourceDB;
+END
+GO
+
+
+
+--------------------------------------------------------------------------------------------------
+USE RetailStageDB;
+GO
+
+CREATE TABLE dbo.stg_Customers
+(
+    customer_id          NVARCHAR(36)   NOT NULL,
+    full_name            NVARCHAR(100)  NULL,
+    age                  SMALLINT       NULL,
+    gender               NVARCHAR(20)   NULL,
+    email                NVARCHAR(100)  NULL,
+    phone                NVARCHAR(25)   NULL,
+    street_address       NVARCHAR(150)  NULL,
+    city                 NVARCHAR(50)   NULL,
+    state                NVARCHAR(50)   NULL,
+    zip_code             NVARCHAR(15)   NULL,
+    registration_date    DATE           NOT NULL,
+    preferred_channel    NVARCHAR(20)   NULL
+);
+GO
+
+CREATE TABLE dbo.stg_Transactions
+(
+    transaction_id       NVARCHAR(36)   NOT NULL,
+    customer_id          NVARCHAR(36)   NOT NULL,
+    product_name         NVARCHAR(100)  NULL,
+    product_category     NVARCHAR(50)   NULL,
+    quantity             INT            NULL,
+    price                DECIMAL(18,2)  NULL,
+    transaction_date     DATE           NOT NULL,
+    store_location       NVARCHAR(100)  NULL,
+    payment_method       NVARCHAR(30)   NULL,
+    discount_applied     DECIMAL(5,2)   NULL
+);
+GO
+
+CREATE TABLE dbo.stg_Interactions
+(
+    interaction_id       NVARCHAR(36)   NOT NULL,
+    customer_id          NVARCHAR(36)   NOT NULL,
+    channel              NVARCHAR(20)   NULL,
+    interaction_type     NVARCHAR(50)   NULL,
+    interaction_date     DATETIME2(0)   NOT NULL,
+    duration             INT            NULL,
+    page_or_product      NVARCHAR(100)  NULL,
+    session_id           NVARCHAR(50)   NOT NULL
+);
+GO
+
+CREATE TABLE dbo.stg_Campaigns
+(
+    campaign_id          NVARCHAR(36)   NOT NULL,
+    campaign_name        NVARCHAR(100)  NULL,
+    campaign_type        NVARCHAR(50)   NULL,
+    start_date           DATE           NOT NULL,
+    end_date             DATE           NOT NULL,
+    target_segment       NVARCHAR(50)   NOT NULL,
+    budget               DECIMAL(18,2)  NULL,
+    impressions          INT            NULL,
+    clicks               INT            NULL,
+    conversions          INT            NULL,
+    conversion_rate      DECIMAL(6,2)   NULL,
+    roi                  DECIMAL(12,2)  NULL
+);
+GO
+
+CREATE TABLE dbo.stg_CustomerReviews
+(
+    review_id            NVARCHAR(50)    NOT NULL,
+    customer_id          NVARCHAR(36)    NULL,
+    product_name         NVARCHAR(200)   NULL,
+    product_category     NVARCHAR(100)   NULL,
+    full_name            NVARCHAR(150)   NULL,
+    transaction_date     DATE            NULL,
+    review_date          DATE            NULL,
+    rating               INT             NULL,
+    review_title         NVARCHAR(255)   NULL,
+    review_text          NVARCHAR(MAX)   NULL
+);
+GO
+
+CREATE TABLE dbo.stg_SupportTickets
+(
+    ticket_id                     NVARCHAR(36)   NOT NULL,
+    customer_id                   NVARCHAR(36)   NOT NULL,
+    issue_category                NVARCHAR(50)   NULL,
+    priority                      NVARCHAR(20)   NULL,
+    submission_date               DATETIME2(0)   NOT NULL,
+    resolution_date               DATETIME2(0)   NULL,
+    resolution_status             NVARCHAR(50)   NULL,
+    resolution_time_hours         DECIMAL(10,2)  NULL,
+    customer_satisfaction_score   DECIMAL(3,1)   NULL,
+    notes                         NVARCHAR(500)  NULL
+);
+GO
+
+CREATE TABLE dbo.stg_TransactionCompletionUpdates
+(
+    transaction_id             NVARCHAR(36)   NOT NULL,
+    accm_txn_complete_time     DATETIME2(0)   NOT NULL
+);
+GO
+
+CREATE INDEX IX_stg_Transactions_customer_id ON dbo.stg_Transactions(customer_id);
+CREATE INDEX IX_stg_Interactions_customer_id ON dbo.stg_Interactions(customer_id);
+CREATE INDEX IX_stg_CustomerReviews_customer_id ON dbo.stg_CustomerReviews(customer_id);
+CREATE INDEX IX_stg_SupportTickets_customer_id ON dbo.stg_SupportTickets(customer_id);
+GO
+
+
+-------------------------
+USE RetailDW;
+GO
+
+CREATE TABLE dbo.DimDate
+(
+    DateKey             INT            NOT NULL,
+    FullDate            DATE           NOT NULL,
+    CalendarYear        SMALLINT       NOT NULL,
+    CalendarQuarter     TINYINT        NOT NULL,
+    MonthNumber         TINYINT        NOT NULL,
+    MonthName           NVARCHAR(20)   NOT NULL,
+    DayOfMonth          TINYINT        NOT NULL,
+    DayName             NVARCHAR(20)   NOT NULL,
+    WeekOfYear          TINYINT        NOT NULL,
+    IsWeekend           BIT            NOT NULL,
+    CONSTRAINT PK_DimDate PRIMARY KEY (DateKey),
+    CONSTRAINT UQ_DimDate_FullDate UNIQUE (FullDate)
+);
+GO
+
+CREATE TABLE dbo.DimCustomer
+(
+    CustomerKey         INT            IDENTITY(1,1) NOT NULL,
+    customer_id         NVARCHAR(36)   NOT NULL,
+    full_name           NVARCHAR(100)  NULL,
+    age                 SMALLINT       NULL,
+    gender              NVARCHAR(20)   NULL,
+    email               NVARCHAR(100)  NULL,
+    phone               NVARCHAR(25)   NULL,
+    street_address      NVARCHAR(150)  NULL,
+    city                NVARCHAR(50)   NULL,
+    state               NVARCHAR(50)   NULL,
+    zip_code            NVARCHAR(15)   NULL,
+    registration_date   DATE           NULL,
+    preferred_channel   NVARCHAR(20)   NULL,
+    EffectiveFrom       DATETIME2(0)   NOT NULL,
+    EffectiveTo         DATETIME2(0)   NOT NULL,
+    IsCurrent           BIT            NOT NULL,
+    LoadDTS             DATETIME2(0)   NOT NULL DEFAULT SYSDATETIME(),
+    CONSTRAINT PK_DimCustomer PRIMARY KEY (CustomerKey)
+);
+GO
+
+CREATE TABLE dbo.DimProduct
+(
+    ProductKey          INT            IDENTITY(1,1) NOT NULL,
+    product_name        NVARCHAR(100)  NOT NULL,
+    product_category    NVARCHAR(50)   NOT NULL,
+    LoadDTS             DATETIME2(0)   NOT NULL DEFAULT SYSDATETIME(),
+    CONSTRAINT PK_DimProduct PRIMARY KEY (ProductKey),
+    CONSTRAINT UQ_DimProduct UNIQUE (product_name, product_category)
+);
+GO
+
+
+
+CREATE TABLE dbo.Err_DimProduct_Lookup
+(
+    product_name      NVARCHAR(200) NULL,
+    product_category  NVARCHAR(100) NULL
+);
+
+CREATE TABLE dbo.DimStore
+(
+    StoreKey            INT            IDENTITY(1,1) NOT NULL,
+    store_location      NVARCHAR(100)  NOT NULL,
+    sales_channel       NVARCHAR(20)   NOT NULL,
+    LoadDTS             DATETIME2(0)   NOT NULL DEFAULT SYSDATETIME(),
+    CONSTRAINT PK_DimStore PRIMARY KEY (StoreKey),
+    CONSTRAINT UQ_DimStore UNIQUE (store_location)
+);
+GO
+
+CREATE TABLE dbo.DimPaymentMethod
+(
+    PaymentMethodKey    INT            IDENTITY(1,1) NOT NULL,
+    payment_method      NVARCHAR(30)   NOT NULL,
+    LoadDTS             DATETIME2(0)   NOT NULL DEFAULT SYSDATETIME(),
+    CONSTRAINT PK_DimPaymentMethod PRIMARY KEY (PaymentMethodKey),
+    CONSTRAINT UQ_DimPaymentMethod UNIQUE (payment_method)
+);
+GO
+
+CREATE TABLE dbo.DimInteractionChannel
+(
+    InteractionChannelKey   INT            IDENTITY(1,1) NOT NULL,
+    channel                 NVARCHAR(20)   NOT NULL,
+    LoadDTS                 DATETIME2(0)   NOT NULL DEFAULT SYSDATETIME(),
+    CONSTRAINT PK_DimInteractionChannel PRIMARY KEY (InteractionChannelKey),
+    CONSTRAINT UQ_DimInteractionChannel UNIQUE (channel)
+);
+GO
+
+CREATE TABLE dbo.DimInteractionType
+(
+    InteractionTypeKey      INT            IDENTITY(1,1) NOT NULL,
+    interaction_type        NVARCHAR(50)   NOT NULL,
+    LoadDTS                 DATETIME2(0)   NOT NULL DEFAULT SYSDATETIME(),
+    CONSTRAINT PK_DimInteractionType PRIMARY KEY (InteractionTypeKey),
+    CONSTRAINT UQ_DimInteractionType UNIQUE (interaction_type)
+);
+GO
+
+CREATE TABLE dbo.DimInteractionSubject
+(
+    InteractionSubjectKey   INT            IDENTITY(1,1) NOT NULL,
+    page_or_product         NVARCHAR(100)  NOT NULL,
+    subject_type            NVARCHAR(20)   NOT NULL,
+    LoadDTS                 DATETIME2(0)   NOT NULL DEFAULT SYSDATETIME(),
+    CONSTRAINT PK_DimInteractionSubject PRIMARY KEY (InteractionSubjectKey),
+    CONSTRAINT UQ_DimInteractionSubject UNIQUE (page_or_product, subject_type)
+);
+GO
+
+CREATE TABLE dbo.DimCampaign
+(
+    CampaignKey         INT            IDENTITY(1,1) NOT NULL,
+    campaign_id         NVARCHAR(36)   NOT NULL,
+    campaign_name       NVARCHAR(100)  NULL,
+    campaign_type       NVARCHAR(50)   NULL,
+    start_date          DATE           NOT NULL,
+    end_date            DATE           NOT NULL,
+    target_segment      NVARCHAR(50)   NOT NULL,
+    LoadDTS             DATETIME2(0)   NOT NULL DEFAULT SYSDATETIME(),
+    CONSTRAINT PK_DimCampaign PRIMARY KEY (CampaignKey),
+    CONSTRAINT UQ_DimCampaign UNIQUE (campaign_id)
+);
+GO
+
+CREATE TABLE dbo.DimIssueCategory
+(
+    IssueCategoryKey    INT            IDENTITY(1,1) NOT NULL,
+    issue_category      NVARCHAR(50)   NOT NULL,
+    LoadDTS             DATETIME2(0)   NOT NULL DEFAULT SYSDATETIME(),
+    CONSTRAINT PK_DimIssueCategory PRIMARY KEY (IssueCategoryKey),
+    CONSTRAINT UQ_DimIssueCategory UNIQUE (issue_category)
+);
+GO
+
+CREATE TABLE dbo.DimTicketPriority
+(
+    TicketPriorityKey   INT            IDENTITY(1,1) NOT NULL,
+    priority            NVARCHAR(20)   NOT NULL,
+    LoadDTS             DATETIME2(0)   NOT NULL DEFAULT SYSDATETIME(),
+    CONSTRAINT PK_DimTicketPriority PRIMARY KEY (TicketPriorityKey),
+    CONSTRAINT UQ_DimTicketPriority UNIQUE (priority)
+);
+GO
+
+CREATE TABLE dbo.DimResolutionStatus
+(
+    ResolutionStatusKey INT            IDENTITY(1,1) NOT NULL,
+    resolution_status   NVARCHAR(50)   NOT NULL,
+    LoadDTS             DATETIME2(0)   NOT NULL DEFAULT SYSDATETIME(),
+    CONSTRAINT PK_DimResolutionStatus PRIMARY KEY (ResolutionStatusKey),
+    CONSTRAINT UQ_DimResolutionStatus UNIQUE (resolution_status)
+);
+GO
+
+
+
+-----------------------------------------------
+CREATE TABLE dbo.FactSales
+(
+    SalesFactKey            BIGINT          IDENTITY(1,1) NOT NULL,
+    transaction_id          NVARCHAR(36)    NOT NULL,
+    TransactionDateKey      INT             NOT NULL,
+    CustomerKey             INT             NOT NULL,
+    ProductKey              INT             NOT NULL,
+    StoreKey                INT             NOT NULL,
+    PaymentMethodKey        INT             NOT NULL,
+    quantity                INT             NULL,
+    price                   DECIMAL(18,2)   NULL,
+    discount_applied        DECIMAL(5,2)    NULL,
+    accm_txn_create_time    DATETIME2(0)    NOT NULL,
+    accm_txn_complete_time  DATETIME2(0)    NULL,
+    txn_process_time_hours  DECIMAL(18,2)   NULL,
+    LoadDTS                 DATETIME2(0)    NOT NULL DEFAULT SYSDATETIME(),
+    CONSTRAINT PK_FactSales PRIMARY KEY (SalesFactKey),
+    CONSTRAINT UQ_FactSales UNIQUE (transaction_id),
+    CONSTRAINT FK_FactSales_Date FOREIGN KEY (TransactionDateKey) REFERENCES dbo.DimDate(DateKey),
+    CONSTRAINT FK_FactSales_Customer FOREIGN KEY (CustomerKey) REFERENCES dbo.DimCustomer(CustomerKey),
+    CONSTRAINT FK_FactSales_Product FOREIGN KEY (ProductKey) REFERENCES dbo.DimProduct(ProductKey),
+    CONSTRAINT FK_FactSales_Store FOREIGN KEY (StoreKey) REFERENCES dbo.DimStore(StoreKey),
+    CONSTRAINT FK_FactSales_Payment FOREIGN KEY (PaymentMethodKey) REFERENCES dbo.DimPaymentMethod(PaymentMethodKey)
+);
+GO
+
+CREATE TABLE dbo.FactCustomerInteraction
+(
+    InteractionFactKey      BIGINT          IDENTITY(1,1) NOT NULL,
+    interaction_id          NVARCHAR(36)    NOT NULL,
+    InteractionDateKey      INT             NOT NULL,
+    CustomerKey             INT             NOT NULL,
+    InteractionChannelKey   INT             NOT NULL,
+    InteractionTypeKey      INT             NOT NULL,
+    InteractionSubjectKey   INT             NOT NULL,
+    interaction_date        DATETIME2(0)    NOT NULL,
+    session_id              NVARCHAR(50)    NOT NULL,
+    duration                INT             NULL,
+    LoadDTS                 DATETIME2(0)    NOT NULL DEFAULT SYSDATETIME(),
+    CONSTRAINT PK_FactCustomerInteraction PRIMARY KEY (InteractionFactKey),
+    CONSTRAINT UQ_FactCustomerInteraction UNIQUE (interaction_id),
+    CONSTRAINT FK_FCI_Date FOREIGN KEY (InteractionDateKey) REFERENCES dbo.DimDate(DateKey),
+    CONSTRAINT FK_FCI_Customer FOREIGN KEY (CustomerKey) REFERENCES dbo.DimCustomer(CustomerKey),
+    CONSTRAINT FK_FCI_Channel FOREIGN KEY (InteractionChannelKey) REFERENCES dbo.DimInteractionChannel(InteractionChannelKey),
+    CONSTRAINT FK_FCI_Type FOREIGN KEY (InteractionTypeKey) REFERENCES dbo.DimInteractionType(InteractionTypeKey),
+    CONSTRAINT FK_FCI_Subject FOREIGN KEY (InteractionSubjectKey) REFERENCES dbo.DimInteractionSubject(InteractionSubjectKey)
+);
+GO
+
+CREATE TABLE dbo.FactCampaignPerformance
+(
+    CampaignFactKey         BIGINT         IDENTITY(1,1) NOT NULL,
+    CampaignKey             INT            NOT NULL,
+    StartDateKey            INT            NOT NULL,
+    EndDateKey              INT            NOT NULL,
+    budget                  DECIMAL(18,2)  NULL,
+    impressions             INT            NULL,
+    clicks                  INT            NULL,
+    conversions             INT            NULL,
+    conversion_rate         DECIMAL(6,2)   NULL,
+    roi                     DECIMAL(12,2)  NULL,
+    LoadDTS                 DATETIME2(0)   NOT NULL DEFAULT SYSDATETIME(),
+    CONSTRAINT PK_FactCampaignPerformance PRIMARY KEY (CampaignFactKey),
+    CONSTRAINT UQ_FactCampaignPerformance UNIQUE (CampaignKey),
+    CONSTRAINT FK_FCP_Campaign FOREIGN KEY (CampaignKey) REFERENCES dbo.DimCampaign(CampaignKey),
+    CONSTRAINT FK_FCP_StartDate FOREIGN KEY (StartDateKey) REFERENCES dbo.DimDate(DateKey),
+    CONSTRAINT FK_FCP_EndDate FOREIGN KEY (EndDateKey) REFERENCES dbo.DimDate(DateKey)
+);
+GO
+
+CREATE TABLE dbo.FactCustomerReview
+(
+    ReviewFactKey           BIGINT          IDENTITY(1,1) NOT NULL,
+    review_id               NVARCHAR(10)    NOT NULL,
+    ReviewDateKey           INT             NOT NULL,
+    TransactionDateKey      INT             NOT NULL,
+    CustomerKey             INT             NOT NULL,
+    ProductKey              INT             NOT NULL,
+    rating                  TINYINT         NOT NULL,
+    review_title            NVARCHAR(150)   NOT NULL,
+    review_text             NVARCHAR(2000)  NOT NULL,
+    LoadDTS                 DATETIME2(0)    NOT NULL DEFAULT SYSDATETIME(),
+    CONSTRAINT PK_FactCustomerReview PRIMARY KEY (ReviewFactKey),
+    CONSTRAINT UQ_FactCustomerReview UNIQUE (review_id),
+    CONSTRAINT FK_FCR_ReviewDate FOREIGN KEY (ReviewDateKey) REFERENCES dbo.DimDate(DateKey),
+    CONSTRAINT FK_FCR_TransactionDate FOREIGN KEY (TransactionDateKey) REFERENCES dbo.DimDate(DateKey),
+    CONSTRAINT FK_FCR_Customer FOREIGN KEY (CustomerKey) REFERENCES dbo.DimCustomer(CustomerKey),
+    CONSTRAINT FK_FCR_Product FOREIGN KEY (ProductKey) REFERENCES dbo.DimProduct(ProductKey)
+);
+GO
+
+CREATE TABLE dbo.FactSupportTicket
+(
+    SupportTicketFactKey            BIGINT          IDENTITY(1,1) NOT NULL,
+    ticket_id                       NVARCHAR(36)    NOT NULL,
+    SubmissionDateKey               INT             NOT NULL,
+    ResolutionDateKey               INT             NULL,
+    CustomerKey                     INT             NOT NULL,
+    IssueCategoryKey                INT             NOT NULL,
+    TicketPriorityKey               INT             NOT NULL,
+    ResolutionStatusKey             INT             NOT NULL,
+    submission_date                 DATETIME2(0)    NOT NULL,
+    resolution_date                 DATETIME2(0)    NULL,
+    resolution_time_hours           DECIMAL(10,2)   NULL,
+    customer_satisfaction_score     DECIMAL(3,1)    NULL,
+    notes                           NVARCHAR(500)   NULL,
+    LoadDTS                         DATETIME2(0)    NOT NULL DEFAULT SYSDATETIME(),
+    CONSTRAINT PK_FactSupportTicket PRIMARY KEY (SupportTicketFactKey),
+    CONSTRAINT UQ_FactSupportTicket UNIQUE (ticket_id),
+    CONSTRAINT FK_FST_SubmissionDate FOREIGN KEY (SubmissionDateKey) REFERENCES dbo.DimDate(DateKey),
+    CONSTRAINT FK_FST_ResolutionDate FOREIGN KEY (ResolutionDateKey) REFERENCES dbo.DimDate(DateKey),
+    CONSTRAINT FK_FST_Customer FOREIGN KEY (CustomerKey) REFERENCES dbo.DimCustomer(CustomerKey),
+    CONSTRAINT FK_FST_Issue FOREIGN KEY (IssueCategoryKey) REFERENCES dbo.DimIssueCategory(IssueCategoryKey),
+    CONSTRAINT FK_FST_Priority FOREIGN KEY (TicketPriorityKey) REFERENCES dbo.DimTicketPriority(TicketPriorityKey),
+    CONSTRAINT FK_FST_Status FOREIGN KEY (ResolutionStatusKey) REFERENCES dbo.DimResolutionStatus(ResolutionStatusKey)
+);
+GO
+
+
+
+
+-----------------------------------
+for task 6.
+---------------------------------------------------------------------------
+USE RetailStageDB;
+GO
+
+IF OBJECT_ID('dbo.stg_FactSalesCompletion', 'U') IS NOT NULL
+    DROP TABLE dbo.stg_FactSalesCompletion;
+GO
+
+CREATE TABLE dbo.stg_FactSalesCompletion
+(
+    transaction_id            NVARCHAR(36)  NOT NULL,
+    accm_txn_complete_time    DATETIME2(0)  NOT NULL,
+    LoadDTS                   DATETIME2(0)  NOT NULL DEFAULT SYSDATETIME()
+);
+GO
+
+USE RetailStageDB;
+GO
+
+IF OBJECT_ID('dbo.stg_FactSalesCompletion', 'U') IS NOT NULL
+    DROP TABLE dbo.stg_FactSalesCompletion;
+GO
+
+CREATE TABLE dbo.stg_FactSalesCompletion
+(
+    transaction_id            NVARCHAR(36)  NOT NULL,
+    accm_txn_complete_time    DATETIME2(0)  NOT NULL,
+    LoadDTS                   DATETIME2(0)  NOT NULL DEFAULT SYSDATETIME()
+);
+GO
+
+USE RetailDW;
+GO
+
+IF OBJECT_ID('dbo.Err_FactSalesCompletion_NotFound', 'U') IS NOT NULL
+    DROP TABLE dbo.Err_FactSalesCompletion_NotFound;
+GO
+
+CREATE TABLE dbo.Err_FactSalesCompletion_NotFound
+(
+    transaction_id            NVARCHAR(36)  NOT NULL,
+    accm_txn_complete_time    DATETIME2(0)  NULL,
+    error_reason              NVARCHAR(200) NOT NULL,
+    LoadDTS                   DATETIME2(0)  NOT NULL DEFAULT SYSDATETIME()
+);
+GO
+
+IF OBJECT_ID('dbo.Err_FactSalesCompletion_BadTime', 'U') IS NOT NULL
+    DROP TABLE dbo.Err_FactSalesCompletion_BadTime;
+GO
+
+CREATE TABLE dbo.Err_FactSalesCompletion_BadTime
+(
+    transaction_id            NVARCHAR(36)  NOT NULL,
+    accm_txn_create_time      DATETIME2(0)  NULL,
+    accm_txn_complete_time    DATETIME2(0)  NULL,
+    error_reason              NVARCHAR(200) NOT NULL,
+    LoadDTS                   DATETIME2(0)  NOT NULL DEFAULT SYSDATETIME()
+);
+GO
+

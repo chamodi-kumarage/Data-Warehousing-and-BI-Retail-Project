@@ -1,0 +1,409 @@
+Assigment 1 I have done using the retail customer and transaction dataset available at this://www.kaggle.com/datasets/raghavendragandhi/retail-customer-and-transaction-dataset. Use very simple, easy-to-understand English suitable for a workplace or academic audience.the dataset is fictional or anonymized, spans six years (2020–2025), and some tables include up to 100,000 unique records. i used ssis and ssms for this progect.a staging database named **RetailStageDB** and a data warehouse database named **RetailDW**. I have several CSV source files as the basis for the data.
+About Dataset
+Overview
+This dataset contains fictional or sample retail data gathered from various sources within a retail business environment. It comprises multiple CSV files that capture customer demographics, purchase transactions, marketing campaign details, customer reviews, support tickets, and other interaction logs.
+
+The primary goal of this dataset is to facilitate exploratory data analysis, data mining, machine learning projects, or general data science practice with a realistic but controlled dataset.
+
+Note: All data here is either fictitious or anonymized. Any resemblance to real people, products, or companies is purely coincidental.
+
+File Descriptions
+customers.csv
+Contains demographic and basic registration information about each customer.
+
+customer_id (int or string): Unique identifier for each customer.
+full_name (string): Full name of the customer.
+age (int): Age of the customer.
+gender (string): Gender of the customer (e.g., “Male”, “Female”, “Other”).
+email (string): Email address.
+phone (string): Phone number.
+street_address (string): Street address.
+city (string): City of residence.
+state (string): State of residence.
+zip_code (string): Zip code/postal code.
+registration_date (date): Date the customer registered.
+preferred_channel (string): Preferred communication channel (e.g., “Email”, “SMS”, “Phone”).
+transactions.csv
+Includes purchase information for products bought by customers.
+
+transaction_id (int): Unique ID for each transaction.
+customer_id (int or string): Links to customer_id in customers.csv.
+product_name (string): Name of the purchased product.
+product_category (string): Category or classification of the product.
+quantity (int): Number of units purchased in this transaction.
+price (float): Price per unit of the product.
+transaction_date (date): Date when the transaction was completed.
+store_location (string): Physical store location or “Online” if purchased via e-commerce.
+payment_method (string): Payment method (e.g., “Credit Card”, “PayPal”, “Cash”).
+discount_applied (float or int): Discount amount or percentage applied (if any).
+interactions.csv
+Captures various interactions the customer has with the company’s digital channels.
+
+interaction_id (int): Unique ID for each interaction.
+customer_id (int or string): Links to customer_id in customers.csv.
+channel (string): Channel of interaction (e.g., “Website”, “Mobile App”, “Social Media”).
+interaction_type (string): Type of interaction (e.g., “View Product”, “Add to Cart”, “Click Ad”).
+interaction_date (date): Date of the interaction.
+duration (int or float): Duration of interaction in seconds or minutes.
+page_or_product (string): Page visited or product name related to the interaction.
+session_id (string): Session identifier to track multiple actions within one session.
+campaigns.csv
+Details about marketing or advertising campaigns.
+
+campaign_id (int): Unique campaign identifier.
+campaign_name (string): Name or title of the campaign.
+campaign_type (string): Type of campaign (e.g., “Email”, “Social Media”, “TV Ad”).
+start_date (date): Launch date of the campaign.
+end_date (date): Completion date of the campaign.
+target_segment (string): Target audience or segment (e.g., “Loyal Customers”, “New Registrations”).
+budget (float): Allocated budget for the campaign.
+impressions (int): Number of impressions generated (for digital campaigns).
+clicks (int): Number of clicks (if applicable).
+conversions (int): Number of desired conversions (e.g., sign-ups, purchases).
+conversion_rate (float): Percentage of impressions that resulted in conversions.
+roi (float): Return on investment for the campaign.
+customer_reviews_complete.csv
+Collection of product reviews submitted by customers post-purchase.
+
+review_id (int): Unique identifier for each review.
+customer_id (int or string): Links to customer_id in customers.csv.
+product_name (string): Name of the product reviewed.
+product_category (string): Category of the product reviewed.
+full_name (string): Name of the customer (could be anonymized).
+transaction_date (date): Date of the transaction related to this review.
+review_date (date): Date the review was posted.
+rating (int): Rating given by the customer (e.g., 1 to 5 stars).
+review_title (string): Short title or summary of the review.
+review_text (string): Full text of the customer’s review.
+support_tickets.csv
+Tracks customer support interactions and resolution details.
+
+ticket_id (int): Unique ID for each support ticket.
+customer_id (int or string): Links to customer_id in customers.csv.
+issue_category (string): General category of the issue (e.g., “Billing”, “Product Defect”, “Returns”).
+priority (string): Priority level (“Low”, “Medium”, “High”).
+submission_date (date): Date the ticket was submitted.
+resolution_date (date): Date the ticket was resolved (if applicable).
+resolution_status (string): Status of the ticket (“Open”, “Closed”, “Pending”, etc.).
+resolution_time_hours (float): Time (in hours) taken to resolve the issue.
+customer_satisfaction_score (int or float): Satisfaction rating after resolution (e.g., 1–5).
+notes (string): Additional notes or remarks from the support agent.
+
+How to Use This Dataset
+Data Analysis & Modeling: Use customers.csv and transactions.csv to understand purchase behavior, customer demographics, and possible purchasing patterns.
+Marketing & Campaign Effectiveness: Combine transactions.csv with campaigns.csv to evaluate campaign ROI, conversion rates, and budget efficiency.
+Customer Journey & Interaction: Merge interactions.csv with customers.csv to analyze user engagement across different channels and interactions.
+Customer Feedback & Sentiment Analysis: Leverage customer_reviews_complete.csv to perform sentiment analysis or text mining on product reviews.
+Customer Support Analysis: Use support_tickets.csv to examine response times, issue types, and satisfaction scores.
+You can join tables using the customer_id field across most files.
+
+Data Quality & Assumptions
+This dataset may contain null/empty values in certain columns (e.g., missing phone numbers, or unknown discount amounts).
+Dates are in a consistent format (e.g., YYYY-MM-DD), but make sure to parse them correctly in your data analysis tools.
+The currency for monetary fields (e.g., price, budget, roi) is unspecified/fictitious. Feel free to assume USD or another currency for demonstration.
+All personal information is fictitious, ensuring that no real customer data or personally identifiable information (PII) is exposed.
+Limitations & Disclaimers
+This dataset is for educational, research, and demonstration purposes only.
+No warranty of accuracy or completeness is provided.
+By using this dataset, you agree to handle any personally identifying information (like email or phone fields) responsibly if present. Consider anonymizing or removing columns that might raise privacy concerns.
+
+they ask us take multiple data sources so i get data from,
+customers.csv → Flat File Source
+customer_reviews_complete.csv → Flat File Source
+support_tickets.csv → Flat File Source
+campaigns.xlsx → Excel Source
+interactions.xlsx → Excel Source
+RetailSourceDB.dbo.src_Transactions → OLE DB Source from SQL Server
+
+those are table i created.
+
+----------------------------------------------------------------------------------------
+here are my staging table codes
+USE RetailStageDB;
+GO
+
+CREATE TABLE dbo.stg_Customers
+(
+    customer_id          NVARCHAR(36)   NOT NULL,
+    full_name            NVARCHAR(100)  NULL,
+    age                  SMALLINT       NULL,
+    gender               NVARCHAR(20)   NULL,
+    email                NVARCHAR(100)  NULL,
+    phone                NVARCHAR(25)   NULL,
+    street_address       NVARCHAR(150)  NULL,
+    city                 NVARCHAR(50)   NULL,
+    state                NVARCHAR(50)   NULL,
+    zip_code             NVARCHAR(15)   NULL,
+    registration_date    DATE           NOT NULL,
+    preferred_channel    NVARCHAR(20)   NULL
+);
+GO
+
+CREATE TABLE dbo.stg_Transactions
+(
+    transaction_id       NVARCHAR(36)   NOT NULL,
+    customer_id          NVARCHAR(36)   NOT NULL,
+    product_name         NVARCHAR(100)  NULL,
+    product_category     NVARCHAR(50)   NULL,
+    quantity             INT            NULL,
+    price                DECIMAL(18,2)  NULL,
+    transaction_date     DATE           NOT NULL,
+    store_location       NVARCHAR(100)  NULL,
+    payment_method       NVARCHAR(30)   NULL,
+    discount_applied     DECIMAL(5,2)   NULL
+);
+GO
+
+CREATE TABLE dbo.stg_Interactions
+(
+    interaction_id       NVARCHAR(36)   NOT NULL,
+    customer_id          NVARCHAR(36)   NOT NULL,
+    channel              NVARCHAR(20)   NULL,
+    interaction_type     NVARCHAR(50)   NULL,
+    interaction_date     DATETIME2(0)   NOT NULL,
+    duration             INT            NULL,
+    page_or_product      NVARCHAR(100)  NULL,
+    session_id           NVARCHAR(50)   NOT NULL
+);
+GO
+
+CREATE TABLE dbo.stg_Campaigns
+(
+    campaign_id          NVARCHAR(36)   NOT NULL,
+    campaign_name        NVARCHAR(100)  NULL,
+    campaign_type        NVARCHAR(50)   NULL,
+    start_date           DATE           NOT NULL,
+    end_date             DATE           NOT NULL,
+    target_segment       NVARCHAR(50)   NOT NULL,
+    budget               DECIMAL(18,2)  NULL,
+    impressions          INT            NULL,
+    clicks               INT            NULL,
+    conversions          INT            NULL,
+    conversion_rate      DECIMAL(6,2)   NULL,
+    roi                  DECIMAL(12,2)  NULL
+);
+GO
+
+CREATE TABLE dbo.stg_CustomerReviews
+(
+    review_id            NVARCHAR(50)    NOT NULL,
+    customer_id          NVARCHAR(36)    NULL,
+    product_name         NVARCHAR(200)   NULL,
+    product_category     NVARCHAR(100)   NULL,
+    full_name            NVARCHAR(150)   NULL,
+    transaction_date     DATE            NULL,
+    review_date          DATE            NULL,
+    rating               INT             NULL,
+    review_title         NVARCHAR(255)   NULL,
+    review_text          NVARCHAR(MAX)   NULL
+);
+GO
+
+CREATE TABLE dbo.stg_SupportTickets
+(
+    ticket_id                     NVARCHAR(36)   NOT NULL,
+    customer_id                   NVARCHAR(36)   NOT NULL,
+    issue_category                NVARCHAR(50)   NULL,
+    priority                      NVARCHAR(20)   NULL,
+    submission_date               DATETIME2(0)   NOT NULL,
+    resolution_date               DATETIME2(0)   NULL,
+    resolution_status             NVARCHAR(50)   NULL,
+    resolution_time_hours         DECIMAL(10,2)  NULL,
+    customer_satisfaction_score   DECIMAL(3,1)   NULL,
+    notes                         NVARCHAR(500)  NULL
+);
+GO
+
+In the staging layer, we first identified and selected appropriate data sources for each dataset, including CSV files (customers, reviews, support tickets), Excel files (campaigns and interactions), and a SQL Server table (transactions). Based on these sources, we created corresponding staging tables in SQL Server Management Studio, namely stg_Customers, stg_Transactions, stg_Interactions, stg_Campaigns, stg_CustomerReviews, stg_SupportTickets, and stg_TransactionCompletionUpdates. After that, we configured connection managers in SSIS to connect to different data sources such as Flat File, Excel, and SQL Server. Within the Data Flow, we used components like Flat File Source and Excel Source to extract data, Derived Column (where necessary) to clean or handle invalid values, and Data Conversion to ensure compatibility between source and destination data types. Finally, we used OLE DB Destination to load the processed data into staging tables. Special attention was given to data types and column lengths to avoid truncation and conversion errors, ensuring consistency between source data and staging schema.
+
+
+-------------------------
+here are my dimention table codes.
+USE RetailDW;
+GO
+
+CREATE TABLE dbo.DimDate
+(
+    DateKey             INT            NOT NULL,
+    FullDate            DATE           NOT NULL,
+    CalendarYear        SMALLINT       NOT NULL,
+    CalendarQuarter     TINYINT        NOT NULL,
+    MonthNumber         TINYINT        NOT NULL,
+    MonthName           NVARCHAR(20)   NOT NULL,
+    DayOfMonth          TINYINT        NOT NULL,
+    DayName             NVARCHAR(20)   NOT NULL,
+    WeekOfYear          TINYINT        NOT NULL,
+    IsWeekend           BIT            NOT NULL,
+    CONSTRAINT PK_DimDate PRIMARY KEY (DateKey),
+    CONSTRAINT UQ_DimDate_FullDate UNIQUE (FullDate)
+);
+GO
+
+CREATE TABLE dbo.DimCustomer
+(
+    CustomerKey         INT            IDENTITY(1,1) NOT NULL,
+    customer_id         NVARCHAR(36)   NOT NULL,
+    full_name           NVARCHAR(100)  NULL,
+    age                 SMALLINT       NULL,
+    gender              NVARCHAR(20)   NULL,
+    email               NVARCHAR(100)  NULL,
+    phone               NVARCHAR(25)   NULL,
+    street_address      NVARCHAR(150)  NULL,
+    city                NVARCHAR(50)   NULL,
+    state               NVARCHAR(50)   NULL,
+    zip_code            NVARCHAR(15)   NULL,
+    registration_date   DATE           NULL,
+    preferred_channel   NVARCHAR(20)   NULL,
+    EffectiveFrom       DATETIME2(0)   NOT NULL,
+    EffectiveTo         DATETIME2(0)   NOT NULL,
+    IsCurrent           BIT            NOT NULL,
+    LoadDTS             DATETIME2(0)   NOT NULL DEFAULT SYSDATETIME(),
+    CONSTRAINT PK_DimCustomer PRIMARY KEY (CustomerKey)
+);
+GO
+
+CREATE TABLE dbo.DimProduct
+(
+    ProductKey          INT            IDENTITY(1,1) NOT NULL,
+    product_name        NVARCHAR(100)  NOT NULL,
+    product_category    NVARCHAR(50)   NOT NULL,
+    LoadDTS             DATETIME2(0)   NOT NULL DEFAULT SYSDATETIME(),
+    CONSTRAINT PK_DimProduct PRIMARY KEY (ProductKey),
+    CONSTRAINT UQ_DimProduct UNIQUE (product_name, product_category)
+);
+GO
+
+
+
+CREATE TABLE dbo.DimStore
+(
+    StoreKey            INT            IDENTITY(1,1) NOT NULL,
+    store_location      NVARCHAR(100)  NOT NULL,
+    sales_channel       NVARCHAR(20)   NOT NULL,
+    LoadDTS             DATETIME2(0)   NOT NULL DEFAULT SYSDATETIME(),
+    CONSTRAINT PK_DimStore PRIMARY KEY (StoreKey),
+    CONSTRAINT UQ_DimStore UNIQUE (store_location)
+);
+GO
+
+CREATE TABLE dbo.DimPaymentMethod
+(
+    PaymentMethodKey    INT            IDENTITY(1,1) NOT NULL,
+    payment_method      NVARCHAR(30)   NOT NULL,
+    LoadDTS             DATETIME2(0)   NOT NULL DEFAULT SYSDATETIME(),
+    CONSTRAINT PK_DimPaymentMethod PRIMARY KEY (PaymentMethodKey),
+    CONSTRAINT UQ_DimPaymentMethod UNIQUE (payment_method)
+);
+GO
+
+In the Retail Data Warehouse (RetailDW) implemented using SSIS, dimension tables are first carefully designed based on the structure and content of the source dataset, typically loaded into staging tables. Each dimension represents a key business entity, such as **DimDate, DimCustomer, DimProduct, DimStore, and DimPaymentMethod**, and is created with appropriate attributes that support analytical queries. During this design phase, special attention is given to selecting correct data types and ensuring consistency between staging and warehouse tables—for example, using **NVARCHAR** for text fields to support Unicode data and avoid character encoding issues. Numeric and date fields are also aligned (e.g., SMALLINT for age, DATE for transaction dates) to prevent conversion errors during ETL processing. Hierarchical data is structured within dimensions to support drill-down analysis; for instance, the **DimDate** table organizes attributes such as day, month, quarter, and year, enabling flexible time-based reporting. A key aspect of dimension loading is handling **Slowly Changing Dimensions (SCD)**, particularly in the **DimCustomer** table, where attributes like address, email, or preferred channel are treated as **historical (Type 2 changes)** and tracked over time using fields such as EffectiveFrom, EffectiveTo, and IsCurrent, while stable attributes like customer ID may be treated as fixed. This distinction allows the warehouse to preserve historical context and analyze how customer behavior evolves. In implementing these dimensions, SSIS data flows are used to extract cleaned and deduplicated data from staging, apply transformations such as filtering nulls and ensuring distinct values (especially for DimProduct), and load only new or changed records using Lookup transformations and SCD components. Each dimension—DimDate (calendar structure), DimCustomer (customer profiles with history), DimProduct (unique products), DimStore (store locations and channels), and DimPaymentMethod (transaction methods)—is built to ensure data quality, consistency, and analytical usefulness, forming a reliable foundation for downstream fact tables and business intelligence reporting.
+
+-----------------------------------------------
+CREATE TABLE dbo.FactSales
+(
+    SalesFactKey            BIGINT          IDENTITY(1,1) NOT NULL,
+    transaction_id          NVARCHAR(36)    NOT NULL,
+    TransactionDateKey      INT             NOT NULL,
+    CustomerKey             INT             NOT NULL,
+    ProductKey              INT             NOT NULL,
+    StoreKey                INT             NOT NULL,
+    PaymentMethodKey        INT             NOT NULL,
+    quantity                INT             NULL,
+    price                   DECIMAL(18,2)   NULL,
+    discount_applied        DECIMAL(5,2)    NULL,
+    accm_txn_create_time    DATETIME2(0)    NOT NULL,
+    accm_txn_complete_time  DATETIME2(0)    NULL,
+    txn_process_time_hours  DECIMAL(18,2)   NULL,
+    LoadDTS                 DATETIME2(0)    NOT NULL DEFAULT SYSDATETIME(),
+    CONSTRAINT PK_FactSales PRIMARY KEY (SalesFactKey),
+    CONSTRAINT UQ_FactSales UNIQUE (transaction_id),
+    CONSTRAINT FK_FactSales_Date FOREIGN KEY (TransactionDateKey) REFERENCES dbo.DimDate(DateKey),
+    CONSTRAINT FK_FactSales_Customer FOREIGN KEY (CustomerKey) REFERENCES dbo.DimCustomer(CustomerKey),
+    CONSTRAINT FK_FactSales_Product FOREIGN KEY (ProductKey) REFERENCES dbo.DimProduct(ProductKey),
+    CONSTRAINT FK_FactSales_Store FOREIGN KEY (StoreKey) REFERENCES dbo.DimStore(StoreKey),
+    CONSTRAINT FK_FactSales_Payment FOREIGN KEY (PaymentMethodKey) REFERENCES dbo.DimPaymentMethod(PaymentMethodKey)
+);
+GO
+
+
+in our assignment it had task for 
+create accm_txn_create_time - indicates the actual time when this record got 
+created, you can assume this is equal to the event_time  
+▪ accm_txn_complete_time - hypothetically, it will take couple of days 
+for your transaction to be completed. When that happens, you need to 
+update this to the correct timestamp.  
+▪ txn_process_time_hours - this is the difference in hours between 
+(accm_txn_complete_time – accm_txn_create_time)  .and i completed that to here are my codes for that.
+
+USE RetailStageDB;
+GO
+
+IF OBJECT_ID('dbo.stg_FactSalesCompletion', 'U') IS NOT NULL
+    DROP TABLE dbo.stg_FactSalesCompletion;
+GO
+
+CREATE TABLE dbo.stg_FactSalesCompletion
+(
+    transaction_id            NVARCHAR(36)  NOT NULL,
+    accm_txn_complete_time    DATETIME2(0)  NOT NULL,
+    LoadDTS                   DATETIME2(0)  NOT NULL DEFAULT SYSDATETIME()
+);
+GO
+
+USE RetailStageDB;
+GO
+
+IF OBJECT_ID('dbo.stg_FactSalesCompletion', 'U') IS NOT NULL
+    DROP TABLE dbo.stg_FactSalesCompletion;
+GO
+
+CREATE TABLE dbo.stg_FactSalesCompletion
+(
+    transaction_id            NVARCHAR(36)  NOT NULL,
+    accm_txn_complete_time    DATETIME2(0)  NOT NULL,
+    LoadDTS                   DATETIME2(0)  NOT NULL DEFAULT SYSDATETIME()
+);
+GO
+
+USE RetailDW;
+GO
+
+IF OBJECT_ID('dbo.Err_FactSalesCompletion_NotFound', 'U') IS NOT NULL
+    DROP TABLE dbo.Err_FactSalesCompletion_NotFound;
+GO
+
+CREATE TABLE dbo.Err_FactSalesCompletion_NotFound
+(
+    transaction_id            NVARCHAR(36)  NOT NULL,
+    accm_txn_complete_time    DATETIME2(0)  NULL,
+    error_reason              NVARCHAR(200) NOT NULL,
+    LoadDTS                   DATETIME2(0)  NOT NULL DEFAULT SYSDATETIME()
+);
+GO
+
+IF OBJECT_ID('dbo.Err_FactSalesCompletion_BadTime', 'U') IS NOT NULL
+    DROP TABLE dbo.Err_FactSalesCompletion_BadTime;
+GO
+
+CREATE TABLE dbo.Err_FactSalesCompletion_BadTime
+(
+    transaction_id            NVARCHAR(36)  NOT NULL,
+    accm_txn_create_time      DATETIME2(0)  NULL,
+    accm_txn_complete_time    DATETIME2(0)  NULL,
+    error_reason              NVARCHAR(200) NOT NULL,
+    LoadDTS                   DATETIME2(0)  NOT NULL DEFAULT SYSDATETIME()
+);
+GO
+
+The **dbo.FactSales** table serves as the central fact table in the data warehouse, designed to store measurable transactional data and support analytical queries across multiple business dimensions. It captures key metrics such as quantity, price, and discount applied for each transaction, and links these measures to descriptive context through several dimension tables. Specifically, FactSales is connected to **DimDate, DimCustomer, DimProduct, DimStore, and DimPaymentMethod**, with each relationship established through foreign keys (e.g., `TransactionDateKey`, `CustomerKey`, `ProductKey`, etc.) that reference the corresponding primary keys in the dimension tables. The table itself is created with a surrogate primary key (`SalesFactKey`) and a natural key constraint on `transaction_id` to ensure uniqueness. During the initial load process (Task 5), the column **accm_txn_create_time** was populated with the system date to record when the fact record was created, while **accm_txn_complete_time** and **txn_process_time_hours** were intentionally left as NULL because the transaction lifecycle was not yet complete. In Task 6, this design was extended by introducing a separate staging table (**stg_FactSalesCompletion**) and associated error tables to handle updates for transaction completion data. A dedicated SSIS package was developed to load completion timestamps from an external dataset (CSV), validate the data, and update the FactSales table accordingly. This process also calculates the processing duration (`txn_process_time_hours`) based on the difference between creation and completion times. These additional tables and processes are essential for implementing an accumulating fact table design, enabling the system to track changes over time and support more advanced temporal analysis. Overall, this approach enhances the completeness and analytical value of the data warehouse while aligning with best practices in ETL design and data modeling.i created factsales_completion.csv file to store transaction ids and complete time.
+
+
+
+
+
+
+
+
+
+
+
